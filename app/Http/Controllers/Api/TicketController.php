@@ -9,7 +9,7 @@ class TicketController extends Controller
 {
     public function index()
     {
-        $tickets = Ticket::select('id', 'title', 'description')->get();
+        $tickets = Ticket::select('id', 'title', 'description', 'attachment')->get();
         return response()->json([
             'message' => 'Get all tickets successfully',
             'payload' => $tickets,

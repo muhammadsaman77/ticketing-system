@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Rating;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 
@@ -41,8 +42,30 @@ class TicketController extends Controller
             ],
         ]);
     }
-    public function rating()
+    public function rating(Request $request)
     {
+        $request->validate([
+            'ticket_id' => 'required|exists:tickets,id',
+            'rating'    => 'required|integer|min:1|max:5',
+            'comment'   => 'nullable|string|max:255',
+        ]);
+        $user = $request->user();
 
+        $rating = Rating::create([
+            'user_id'   => $user->id,
+            'ticket_id' => $request->ticket_id,
+            'rating'    => $request->rating,
+            'comment'   => $request->comment,
+        ]);
+        return response()->json([
+            'message' => 'Rating submitted successfully',
+            'payload' => [
+                'id'         => $rating->id,
+                'rating'     => $rating->rating,
+                'comment'    => $rating->comment,
+                'created_at' => $rating->created_at,
+                'updated_at' => $rating->updated_at,
+            ],
+        ]);
     }
 }

@@ -51,4 +51,18 @@ class AuthController extends Controller
 
     }
 
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password'         => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+        $request->user()->update([
+            'password' => Hash::make($request->password),
+        ]);
+        return response()->json([
+            'message' => 'Password changed',
+        ]);
+    }
+
 }

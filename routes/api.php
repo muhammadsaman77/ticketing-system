@@ -21,5 +21,5 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/', [TicketController::class, 'store']);
         Route::post('/rating', [TicketController::class, 'rating']);
     });
-
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
 });

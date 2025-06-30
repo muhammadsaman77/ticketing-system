@@ -12,10 +12,20 @@ class TicketController extends Controller
 {
     public function index()
     {
-        $tickets = Ticket::select('id', 'title', 'description', 'status')->get();
+        $tickets = Ticket::select('id', 'title', 'description', 'status')
+            ->orderBy('created_at', 'desc')
+            ->get();
         return response()->json([
             'message' => 'Get all tickets successfully',
             'payload' => $tickets,
+        ]);
+    }
+    public function show($id)
+    {
+        $ticket = Ticket::find($id);
+        return response()->json([
+            'message' => 'Get ticket successfully',
+            'payload' => $ticket,
         ]);
     }
     public function store(Request $request)
@@ -23,13 +33,14 @@ class TicketController extends Controller
         $request->validate([
             'title'         => 'required|string|max:50',
             'description'   => 'required|string|max:255',
-            'attachments'   => 'required|array|max:3',
+            'attachments'   => 'array|max:3',
             'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
         $user = $request->user();
         try {
             DB::beginTransaction();
-            $newTicket = Ticket::create([
+            $attachments = [];
+            $newTicket   = Ticket::create([
                 'user_id'     => $user->id,
                 'title'       => $request->title,
                 'description' => $request->description,
@@ -37,8 +48,7 @@ class TicketController extends Controller
             ]);
 
             if ($request->hasFile('attachments')) {
-                $files       = $request->file('attachments');
-                $attachments = [];
+                $files = $request->file('attachments');
                 foreach ($files as $file) {
                     $path          = $file->store('attachments');
                     $newAttachment = TicketAttachment::create([

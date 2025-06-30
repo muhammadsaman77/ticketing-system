@@ -18,6 +18,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login-api');
 Route::middleware('auth:api')->group(function () {
     Route::prefix('/tickets')->group(function () {
         Route::get('/', [TicketController::class, 'index']);
+        Route::get('/{id}', [TicketController::class, 'show']);
         Route::post('/', [TicketController::class, 'store']);
         Route::post('/rating', [TicketController::class, 'rating']);
     });

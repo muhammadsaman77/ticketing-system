@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ratings', function (Blueprint $table) {
+        Schema::create('ticket_attachments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
-            $table->unsignedTinyInteger('rating');
-            $table->text('comment')->nullable();
-            $table->timestamps();
-            $table->unique(['user_id', 'ticket_id']);
-
+            $table->string('file_url');
+            $table->timestamp('uploaded_at')->useCurrent();
         });
     }
 
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ratings');
+        Schema::dropIfExists('ticket_attachments');
     }
 };

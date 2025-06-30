@@ -18,19 +18,39 @@ class AuthController extends Controller
             'client_id'     => 'required',
             'client_secret' => 'required',
         ]);
-        $response = Http::asForm()->post('http://127.0.0.1:8001/oauth/token', [
-            'grant_type'    => 'password',
-            'client_id'     => $request->client_id,
-            'client_secret' => $request->client_secret,
-            'username'      => $request->email,
-            'password'      => $request->password,
-            'scope'         => '*',
-        ]);
-        return response()->json([
-            'message' => 'User logged in Successfully',
-            'token'   => $response->json()['access_token'],
 
-        ]);
+        try {
+            $response = Http::asForm()->post(config('app.url') . '/oauth/token', [
+                'grant_type'    => 'password',
+                'client_id'     => $request->client_id,
+                'client_secret' => $request->client_secret,
+                'username'      => $request->email,
+                'password'      => $request->password,
+                'scope'         => '*',
+            ]);
+
+            if ($response->successful()) {
+
+                if (isset($response->json()['access_token'])) {
+                    return response()->json([
+                        'message' => 'User logged in Successfully',
+                        'token'   => $response->json()['access_token'],
+                    ], 200);
+                } else {
+
+                    return response()->json([
+                        'message' => 'Login successful, but no access token received.',
+                    ], 500);
+                }
+            } else {
+                return response()->json($response->json(), $response->status());
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Terjadi kesalahan internal saat mencoba login.',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
     }
     public function register(Request $request)
     {

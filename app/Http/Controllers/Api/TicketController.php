@@ -4,13 +4,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Rating;
 use App\Models\Ticket;
+use App\Models\TicketAttachment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
 {
     public function index()
     {
-        $tickets = Ticket::select('id', 'title', 'description', 'attachment')->get();
+        $tickets = Ticket::select('id', 'title', 'description', 'status')->get();
         return response()->json([
             'message' => 'Get all tickets successfully',
             'payload' => $tickets,
@@ -19,28 +21,53 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'       => 'required|string|max:50',
-            'description' => 'required|string|max:255',
-            'attachment'  => 'required|file|mimes:jpg,png,pdf|max:2048',
+            'title'         => 'required|string|max:50',
+            'description'   => 'required|string|max:255',
+            'attachments'   => 'required|array|max:3',
+            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
-        $path      = $request->file('attachment')->store('uploads/tickets', );
-        $user      = $request->user();
-        $newTicket = Ticket::create([
-            'user_id'     => $user->id,
-            'title'       => $request->title,
-            'description' => $request->description,
-            'attachment'  => $path,
-        ]);
+        $user = $request->user();
+        try {
+            DB::beginTransaction();
+            $newTicket = Ticket::create([
+                'user_id'     => $user->id,
+                'title'       => $request->title,
+                'description' => $request->description,
+                'status'      => 'OPEN',
+            ]);
+
+            if ($request->hasFile('attachments')) {
+                $files       = $request->file('attachments');
+                $attachments = [];
+                foreach ($files as $file) {
+                    $path          = $file->store('attachments');
+                    $newAttachment = TicketAttachment::create([
+                        'ticket_id' => $newTicket->id,
+                        'file_url'  => $path,
+                    ]);
+                    array_push($attachments, $newAttachment);
+
+                }
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Submit new ticket failed',
+                'error'   => $e->getMessage(),
+            ]);
+        }
+
         return response()->json([
             'message' => 'Submit new ticket successfully',
             'payload' => [
                 'id'          => $newTicket->id,
                 'title'       => $newTicket->title,
                 'description' => $newTicket->description,
-                'created_at'  => $newTicket->created_at,
-                'updated_at'  => $newTicket->updated_at,
+                'attachments' => $attachments,
             ],
         ]);
+
     }
     public function rating(Request $request)
     {

@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
+import DialogCreateHandler from '@/pages/handlers/DialogCreateHandler.vue';
 import { BreadcrumbItem } from '@/types';
 import { usePage } from '@inertiajs/vue3';
 
@@ -26,6 +27,7 @@ const handlers = page.props.handlers as Handler[];
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-4">
+            <DialogCreateHandler />
             <Table>
                 <TableHeader>
                     <TableHead>#</TableHead>

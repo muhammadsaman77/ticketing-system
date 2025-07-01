@@ -12,4 +12,9 @@ class Ticket extends Model
     {
         return $this->belongsTo(Rating::class, );
     }
+
+    public function submitter()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

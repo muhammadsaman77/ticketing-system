@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone_number')->nullable()->unique();
             $table->string('specialization')->nullable();
-            $table->enum('role', ['HELPDESK', 'PIC', 'ADMIN']);
+            $table->enum('role', ['HELPDESK', 'PIC']);
             $table->timestamps();
             $table->softDeletes();
         });

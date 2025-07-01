@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { BreadcrumbItem } from '@/types';
+import { usePage } from '@inertiajs/vue3';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -10,6 +11,16 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/handlers',
     },
 ];
+type Handler = {
+    id: number;
+    name: string;
+    email: string;
+    phone_number: string;
+    specialization: string;
+    role: string;
+};
+const page = usePage();
+const handlers = page.props.handlers as Handler[];
 </script>
 
 <template>
@@ -26,13 +37,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <TableHead>Action</TableHead>
                 </TableHeader>
                 <TableBody>
-                    <TableRow v-for="n in 5" :key="n">
-                        <TableHead>{{ n }}</TableHead>
-                        <TableCell>John Doe</TableCell>
-                        <TableCell>oH5dO@example.com</TableCell>
-                        <TableCell>1234567890</TableCell>
-                        <TableCell>Network Engineer</TableCell>
-                        <TableCell>PIC</TableCell>
+                    <TableRow v-for="(item, index) in handlers">
+                        <TableHead>{{ index + 1 }}</TableHead>
+                        <TableCell>{{ item.name }}</TableCell>
+                        <TableCell>{{ item.email }}</TableCell>
+                        <TableCell>{{ item.phone_number }}</TableCell>
+                        <TableCell>{{ item.specialization }}</TableCell>
+                        <TableCell>{{ item.role }}</TableCell>
                         <TableCell class="space-x-2">
                             <Button>Edit</Button>
                             <Button variant="destructive">Delete</Button>

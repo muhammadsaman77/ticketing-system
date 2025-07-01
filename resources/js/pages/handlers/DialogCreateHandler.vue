@@ -1,9 +1,44 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { phoneNumberValidation } from '@/lib/custom_validation';
+import { router } from '@inertiajs/vue3';
+import { toTypedSchema } from '@vee-validate/zod';
+import { useForm } from 'vee-validate';
+import * as z from 'zod';
+type FormData = {
+    name: string;
+    email: string;
+    phone_number: string;
+    specialization: string;
+    role: string;
+};
+
+const { handleSubmit } = useForm<FormData>({
+    validationSchema: toTypedSchema(
+        z.object({
+            name: z.string(),
+            email: z.string().email(),
+            phone_number: z.string().regex(phoneNumberValidation, 'Invalid phone number'),
+            specialization: z.string(),
+            role: z.enum(['PIC', 'HELPDESK']),
+        }),
+    ),
+});
+
+const onSubmit = handleSubmit((values) => {
+    router.post(route('handlers.store'), values, {
+        onSuccess: () => {
+            router.visit(route('handlers.index'));
+        },
+        onError: (e) => {
+            router.visit(route('handlers.index'));
+        },
+    });
+});
 </script>
 
 <template>
@@ -12,7 +47,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
             <Button> Add Handler </Button>
         </DialogTrigger>
         <DialogContent class="sm:max-w-[425px]">
-            <Form>
+            <form @submit="onSubmit">
                 <DialogHeader>
                     <DialogTitle>Add Handler</DialogTitle>
                     <DialogDescription> Add a new handler. Click submit when you're done. </DialogDescription>
@@ -30,7 +65,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
                     </FormField>
                     <FormField v-slot="{ componentField }" name="email">
                         <FormItem>
-                            <FormLabel><Em></Em>mail</FormLabel>
+                            <FormLabel>Email</FormLabel>
                             <FormControl>
                                 <Input type="text" placeholder="email@example.com" v-bind="componentField" />
                             </FormControl>
@@ -58,7 +93,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
                             <FormMessage />
                         </FormItem>
                     </FormField>
-                    <FormField v-slot="{ componentField }" name="specialization">
+                    <FormField v-slot="{ componentField }" name="role">
                         <FormItem>
                             <FormLabel>Role</FormLabel>
                             <Select v-bind="componentField">
@@ -82,7 +117,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
                 <DialogFooter>
                     <Button type="submit"> Submit</Button>
                 </DialogFooter>
-            </Form>
+            </form>
         </DialogContent>
     </Dialog>
 </template>

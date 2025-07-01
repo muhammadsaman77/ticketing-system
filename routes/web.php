@@ -22,6 +22,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     });
     Route::prefix('handlers')->group(function () {
         Route::get('/', [HandlerController::class, 'index'])->name('handlers.index');
+        Route::post('/', [HandlerController::class, 'store'])->name('handlers.store');
     });
 });
 

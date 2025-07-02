@@ -29,13 +29,13 @@ class HandlerController extends Controller
         ]);
 
         try {
-            // Handler::create([
-            //     'name'           => $request->name,
-            //     'email'          => $request->email,
-            //     'phone_number'   => $request->phone_number,
-            //     'specialization' => $request->specialization,
-            //     'role'           => $request->role,
-            // ]);
+            Handler::create([
+                'name'           => $request->name,
+                'email'          => $request->email,
+                'phone_number'   => $request->phone_number,
+                'specialization' => $request->specialization,
+                'role'           => $request->role,
+            ]);
             return to_route('handlers.index')->with('success', 'Handler created successfully');
 
         } catch (\Exception $e) {

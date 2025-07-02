@@ -5,9 +5,11 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessa
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { phoneNumberValidation } from '@/lib/custom_validation';
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
+import { computed } from 'vue';
+import { toast } from 'vue-sonner';
 import * as z from 'zod';
 type FormData = {
     name: string;
@@ -17,13 +19,16 @@ type FormData = {
     role: string;
 };
 
+const page = usePage();
+const errors = computed(() => page.props.errors || {});
+
 const { handleSubmit } = useForm<FormData>({
     validationSchema: toTypedSchema(
         z.object({
-            name: z.string(),
+            name: z.string().max(255),
             email: z.string().email(),
-            phone_number: z.string().regex(phoneNumberValidation, 'Invalid phone number'),
-            specialization: z.string(),
+            phone_number: z.string().max(20).regex(phoneNumberValidation, 'Invalid phone number'),
+            specialization: z.string().max(50),
             role: z.enum(['PIC', 'HELPDESK']),
         }),
     ),
@@ -31,11 +36,12 @@ const { handleSubmit } = useForm<FormData>({
 
 const onSubmit = handleSubmit((values) => {
     router.post(route('handlers.store'), values, {
-        onSuccess: () => {
-            router.visit(route('handlers.index'));
-        },
-        onError: (e) => {
-            router.visit(route('handlers.index'));
+        onSuccess: (v) => {
+            router.visit(route('handlers.index'), {
+                onSuccess: () => {
+                    toast.success(v.props.flash.success ?? '');
+                },
+            });
         },
     });
 });
@@ -61,6 +67,9 @@ const onSubmit = handleSubmit((values) => {
                             </FormControl>
                             <FormDescription> This is handler public display name. </FormDescription>
                             <FormMessage />
+                            <template v-if="errors?.name">
+                                <span class="text-sm text-destructive"> {{ errors.email }} </span>
+                            </template>
                         </FormItem>
                     </FormField>
                     <FormField v-slot="{ componentField }" name="email">
@@ -71,6 +80,9 @@ const onSubmit = handleSubmit((values) => {
                             </FormControl>
                             <FormDescription> This is handler email. </FormDescription>
                             <FormMessage />
+                            <template v-if="errors?.email">
+                                <span class="text-sm text-destructive"> {{ errors.email }} </span>
+                            </template>
                         </FormItem>
                     </FormField>
                     <FormField v-slot="{ componentField }" name="phone_number">
@@ -81,6 +93,9 @@ const onSubmit = handleSubmit((values) => {
                             </FormControl>
                             <FormDescription> This is handler phone number. </FormDescription>
                             <FormMessage />
+                            <template v-if="errors?.phone_number">
+                                <span class="text-sm text-destructive"> {{ errors.email }} </span>
+                            </template>
                         </FormItem>
                     </FormField>
                     <FormField v-slot="{ componentField }" name="specialization">
@@ -91,6 +106,9 @@ const onSubmit = handleSubmit((values) => {
                             </FormControl>
                             <FormDescription> This is handler specialization. </FormDescription>
                             <FormMessage />
+                            <template v-if="errors?.specialization">
+                                <span class="text-sm text-destructive"> {{ errors.email }} </span>
+                            </template>
                         </FormItem>
                     </FormField>
                     <FormField v-slot="{ componentField }" name="role">
@@ -111,6 +129,9 @@ const onSubmit = handleSubmit((values) => {
                             </Select>
                             <FormDescription> This is handler role. </FormDescription>
                             <FormMessage />
+                            <template v-if="errors?.role">
+                                <span class="text-sm text-destructive"> {{ errors.email }} </span>
+                            </template>
                         </FormItem>
                     </FormField>
                 </div>

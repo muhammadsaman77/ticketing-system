@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('log_ticket_processing', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ticket_id')->constrained('tickets')->onDelete('cascade');
-            $table->foreignId('handler_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('handler_id')->nullable()->constrained('handlers')->onDelete('set null');
             $statuses = ['OPEN', 'IN_PROGRESS', 'PENDING_USER_ACTION', 'RESOLVED', 'CLOSED', 'CANCELLED'];
             $table->enum('from_status', $statuses)->nullable();
             $table->enum('to_status', $statuses);

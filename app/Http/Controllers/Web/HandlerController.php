@@ -23,7 +23,7 @@ class HandlerController extends Controller
         $request->validate([
             'name'           => 'required|string|max:255',
             'email'          => 'required|string|email|unique:handlers,email',
-            'phone_number'   => 'required|string|max:20',
+            'phone_number'   => 'required|string|unique:handlers,phone_number|max:20',
             'specialization' => 'required|string|max:50',
             'role'           => 'required|string|in:HELPDESK,PIC',
         ]);

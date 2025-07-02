@@ -19,6 +19,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     })->name('dashboard');
     Route::prefix('submissions')->group(function () {
         Route::get('/', [SubmissionController::class, 'index'])->name('submissions.index');
+        Route::put('/{id}', [SubmissionController::class, 'update'])->name('submissions.update');
     });
     Route::prefix('handlers')->group(function () {
         Route::get('/', [HandlerController::class, 'index'])->name('handlers.index');

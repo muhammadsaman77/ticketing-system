@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { BreadcrumbItem } from '@/types';
 import { usePage } from '@inertiajs/vue3';
-
+import DialogEditSubmission from './DialogEditSubmission.vue';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Submissions',
@@ -48,10 +48,10 @@ const tickets = page.props.tickets as Tickets[];
                         <TableCell>{{ item.submitter.name }}</TableCell>
                         <TableCell>{{ item.title }}</TableCell>
                         <TableCell class="whitespace-normal">{{ item.description }}</TableCell>
-                        <TableCell>{{}}</TableCell>
-                        <TableCell>{{ item.status }}</TableCell>
+                        <TableCell>{{ item.title }}</TableCell>
+                        <TableCell> </TableCell>
                         <TableCell class="space-x-2">
-                            <Button>Edit</Button>
+                            <DialogEditSubmission :status="item.status" :id="item.id" />
                             <Button variant="destructive">Delete</Button>
                         </TableCell>
                     </TableRow>

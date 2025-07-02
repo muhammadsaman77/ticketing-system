@@ -68,7 +68,7 @@ const onSubmit = handleSubmit((values) => {
                             <FormDescription> This is handler public display name. </FormDescription>
                             <FormMessage />
                             <template v-if="errors?.name">
-                                <span class="text-sm text-destructive"> {{ errors.email }} </span>
+                                <span class="text-sm text-destructive"> {{ errors.name }} </span>
                             </template>
                         </FormItem>
                     </FormField>
@@ -94,7 +94,7 @@ const onSubmit = handleSubmit((values) => {
                             <FormDescription> This is handler phone number. </FormDescription>
                             <FormMessage />
                             <template v-if="errors?.phone_number">
-                                <span class="text-sm text-destructive"> {{ errors.email }} </span>
+                                <span class="text-sm text-destructive"> {{ errors.phone_number }} </span>
                             </template>
                         </FormItem>
                     </FormField>
@@ -107,7 +107,7 @@ const onSubmit = handleSubmit((values) => {
                             <FormDescription> This is handler specialization. </FormDescription>
                             <FormMessage />
                             <template v-if="errors?.specialization">
-                                <span class="text-sm text-destructive"> {{ errors.email }} </span>
+                                <span class="text-sm text-destructive"> {{ errors.specialization }} </span>
                             </template>
                         </FormItem>
                     </FormField>
@@ -130,7 +130,7 @@ const onSubmit = handleSubmit((values) => {
                             <FormDescription> This is handler role. </FormDescription>
                             <FormMessage />
                             <template v-if="errors?.role">
-                                <span class="text-sm text-destructive"> {{ errors.email }} </span>
+                                <span class="text-sm text-destructive"> {{ errors.role }} </span>
                             </template>
                         </FormItem>
                     </FormField>

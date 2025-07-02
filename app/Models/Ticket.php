@@ -12,7 +12,10 @@ class Ticket extends Model
     {
         return $this->belongsTo(Rating::class, );
     }
-
+    public function handler()
+    {
+        return $this->belongsTo(Handler::class, 'handler_id');
+    }
     public function submitter()
     {
         return $this->belongsTo(User::class, 'user_id');

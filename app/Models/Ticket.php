@@ -20,4 +20,8 @@ class Ticket extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function log_ticket()
+    {
+        return $this->hasMany(LogTicket::class, 'ticket_id');
+    }
 }

@@ -12,8 +12,11 @@ Route::get('/user', function (Request $request) {
 Route::get('/', function () {
     return 'hello';
 });
-Route::post('/register', [AuthController::class, 'register'])->name('register-api');
-Route::post('/login', [AuthController::class, 'login'])->name('login-api');
+Route::middleware('guest')->group(function () {
+
+    Route::post('/register', [AuthController::class, 'register'])->name('register-api');
+    Route::post('/login', [AuthController::class, 'login'])->name('login-api');
+});
 
 Route::middleware('auth:api')->group(function () {
     Route::prefix('/tickets')->group(function () {

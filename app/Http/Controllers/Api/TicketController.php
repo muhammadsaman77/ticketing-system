@@ -22,11 +22,27 @@ class TicketController extends Controller
     }
     public function show($id)
     {
-        $ticket = Ticket::find($id);
-        return response()->json([
-            'message' => 'Get ticket successfully',
-            'payload' => $ticket,
-        ]);
+        try {
+
+            $ticket = Ticket::
+                select('id', 'title', 'description', 'status', 'user_id', 'handler_id')
+                ->with(([
+                    'submitter:id,name',
+                    'handler:id,name',
+                    'log_ticket:id,ticket_id,handler_id,from_status,to_status,notes',
+                ]))
+
+                ->findOrFail($id);
+            return response()->json([
+                'message' => 'Get ticket successfully',
+                'payload' => $ticket,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Get ticket failed',
+                'error'   => $e->getMessage(),
+            ]);
+        }
     }
     public function store(Request $request)
     {

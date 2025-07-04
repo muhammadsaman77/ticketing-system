@@ -49,7 +49,7 @@ const tickets = page.props.tickets as Tickets[];
                         <TableCell>{{ item.title }}</TableCell>
                         <TableCell class="whitespace-normal">{{ item.description }}</TableCell>
                         <TableCell>{{ item.title }}</TableCell>
-                        <TableCell> </TableCell>
+                        <TableCell>{{ item.status.replaceAll('_', ' ') }} </TableCell>
                         <TableCell class="space-x-2">
                             <DialogEditSubmission :status="item.status" :id="item.id" />
                             <Button variant="destructive">Delete</Button>
